@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Transcription Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <meta name="theme-color" content="#2563EB">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 id="app-title"><i class="fas fa-stethoscope"></i> Медицинский Ассистент</h1>
+            <div class="controls">
+                <button id="font-small"><i class="fas fa-font"></i><i class="fas fa-minus"></i></button>
+                <button id="font-normal"><i class="fas fa-font"></i></button>
+                <button id="font-large"><i class="fas fa-font"></i><i class="fas fa-plus"></i></button>
+                <button id="save-session" class="btn-secondary"><i class="fas fa-save"></i> Сохранить</button>
+                <button id="load-session" class="btn-secondary"><i class="fas fa-folder-open"></i> Загрузить</button>
+            </div>
+        </header>
+
+        <main>
+            <!-- Аудио запись -->
+            <div class="section">
+                <h2><i class="fas fa-microphone"></i> Запись разговора</h2>
+                <div class="recording-controls">
+                    <button id="record-btn" class="btn-primary"><i class="fas fa-record-vinyl"></i> Начать запись</button>
+                    <button id="stop-btn" class="btn-secondary" disabled><i class="fas fa-stop"></i> Остановить</button>
+                    <div class="file-upload">
+                        <input type="file" id="audio-file" accept="audio/*" hidden>
+                        <button id="upload-btn" class="btn-secondary"><i class="fas fa-file-upload"></i> Загрузить аудио</button>
+                    </div>
+                    <div id="recording-status">Готов к записи</div>
+                </div>
+            </div>
+
+            <!-- Транскрипция -->
+            <div class="section">
+                <h2><i class="fas fa-file-alt"></i> Транскрипция</h2>
+                <div id="transcription" class="editable-text" contenteditable="true" data-placeholder="Здесь появится расшифровка разговора..."></div>
+                <button id="copy-all" class="btn-secondary"><i class="fas fa-copy"></i> Копировать всю расшифровку</button>
+            </div>
+
+            <!-- Медицинские разделы -->
+            <div class="section">
+                <h2><i class="fas fa-file-medical"></i> Медицинские разделы</h2>
+                <div class="section-templates">
+                    <button id="apply-templates" class="btn-secondary"><i class="fas fa-magic"></i> Заполнить по шаблонам</button>
+                </div>
+                <div class="sections-grid">
+                    <div class="medical-section">
+                        <h3><i class="fas fa-comment-dots"></i> Жалобы</h3>
+                        <div id="complaints" class="editable-text" contenteditable="true" data-placeholder="Основные жалобы пациента..."></div>
+                        <button class="copy-section" data-section="complaints"><i class="fas fa-copy"></i> Копировать</button>
+                    </div>
+                    <div class="medical-section">
+                        <h3><i class="fas fa-history"></i> Анамнез жизни</h3>
+                        <div id="life-history" class="editable-text" contenteditable="true" data-placeholder="История жизни и перенесенные заболевания..."></div>
+                        <button class="copy-section" data-section="life-history"><i class="fas fa-copy"></i> Копировать</button>
+                    </div>
+                    <div class="medical-section">
+                        <h3><i class="fas fa-allergies"></i> Аллергологический</h3>
+                        <div id="allergies" class="editable-text" contenteditable="true" data-placeholder="Аллергические реакции и непереносимости..."></div>
+                        <button class="copy-section" data-section="allergies"><i class="fas fa-copy"></i> Копировать</button>
+                    </div>
+                    <div class="medical-section">
+                        <h3><i class="fas fa-clipboard-check"></i> Объективный осмотр</h3>
+                        <div id="examination" class="editable-text" contenteditable="true" data-placeholder="Результаты объективного осмотра..."></div>
+                        <button class="copy-section" data-section="examination"><i class="fas fa-copy"></i> Копировать</button>
+                    </div>
+                    <div class="medical-section">
+                        <h3><i class="fas fa-diagnoses"></i> Диагноз</h3>
+                        <div id="diagnosis" class="editable-text" contenteditable="true" data-placeholder="Основной и сопутствующие диагнозы..."></div>
+                        <button class="copy-section" data-section="diagnosis"><i class="fas fa-copy"></i> Копировать</button>
+                    </div>
+                    <div class="medical-section">
+                        <h3><i class="fas fa-prescription-bottle-alt"></i> Назначения</h3>
+                        <div id="prescriptions" class="editable-text" contenteditable="true" data-placeholder="Назначенные препараты и процедуры..."></div>
+                        <button class="copy-section" data-section="prescriptions"><i class="fas fa-copy"></i> Копировать</button>
+                    </div>
+                    <div class="medical-section">
+                        <h3><i class="fas fa-microscope"></i> Исследования</h3>
+                        <div id="examinations" class="editable-text" contenteditable="true" data-placeholder="Назначенные лабораторные и инструментальные исследования..."></div>
+                        <button class="copy-section" data-section="examinations"><i class="fas fa-copy"></i> Копировать</button>
+                    </div>
+                    <div class="medical-section">
+                        <h3><i class="fas fa-pills"></i> Пациент принимает препараты</h3>
+                        <div id="current-meds" class="editable-text" contenteditable="true" data-placeholder="Препараты, которые пациент принимает постоянно..."></div>
+                        <button class="copy-section" data-section="current-meds"><i class="fas fa-copy"></i> Копировать</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ИИ агенты -->
+            <div class="section">
+                <h2><i class="fas fa-robot"></i> ИИ Ассистенты</h2>
+                <div class="ai-agents">
+                    <button id="drug-checker" class="btn-primary"><i class="fas fa-capsules"></i> Проверить совместимость препаратов</button>
+                    <button id="recommendations" class="btn-primary"><i class="fas fa-list-check"></i> Сгенерировать рекомендации</button>
+                    <button id="analyze-conversation" class="btn-primary"><i class="fas fa-brain"></i> Проанализировать разговор</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Модальное окно для сохранения/загрузки -->
+    <div id="session-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Управление сессиями</h3>
+            <div class="modal-actions">
+                <button id="new-session" class="btn-primary"><i class="fas fa-plus"></i> Новая сессия</button>
+                <button id="save-current" class="btn-primary"><i class="fas fa-save"></i> Сохранить текущую</button>
+                <div class="saved-sessions">
+                    <h4>Сохраненные сессии:</h4>
+                    <ul id="sessions-list"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+
+<!-- Добавьте этот скрипт перед закрывающим тегом body -->
+<script>
+  // Регистрация Service Worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('./service-worker.js')
+        .then(function(registration) {
+          console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        })
+        .catch(function(error) {
+          console.log('ServiceWorker registration failed: ', error);
+        });
+    });
+  }
+
+  // Обработка PWA установки
+  let deferredPrompt;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    console.log('PWA can be installed');
+  });
+</script>
+
+</body>
+</html>
